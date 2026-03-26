@@ -26,15 +26,16 @@ COUNT_EQUAL_LOW_AS_NEW = True
 
 
 def latest_trading_date(max_back_days: int = 14) -> str:
+    """최근 거래일(YYYYMMDD) 찾기 - 삼성전자 기준"""
     today = date.today()
     for n in range(max_back_days):
         d = (today - timedelta(days=n)).strftime("%Y%m%d")
         try:
-            df = stock.get_market_ohlcv(d, market="KOSPI")
+            df = stock.get_market_ohlcv(d, d, "005930")
             if isinstance(df, pd.DataFrame) and not df.empty:
                 return d
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[latest_trading_date] {d} 조회 실패: {e}")
     raise RuntimeError("최근 거래일을 찾지 못했습니다.")
 
 

@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>52주 신고가 비율</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background: #f6f8fb;
+      color: #1f2937;
+    }
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .head h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .muted {
+      color: #6b7280;
+      font-size: 13px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 6px 18px rgba(17, 24, 39, 0.04);
+    }
+    .label {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+    .big {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+    .sub {
+      margin-top: 6px;
+      color: #6b7280;
+      font-size: 13px;
+    }
+    .bar-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 6px 18px rgba(17, 24, 39, 0.04);
+    }
+    .bar-track {
+      width: 100%;
+      height: 18px;
+      background: #eef2f7;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+      transition: width .6s ease;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .pill {
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #374151;
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .section-head h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .table-wrap {
+      overflow: auto;
+      max-height: 560px;
+      border: 1px solid #eef2f7;
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: #f8fafc;
+      z-index: 1;
+      font-size: 13px;
+      color: #475569;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 12px 10px;
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 11px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    tbody tr:hover {
+      background: #fafcff;
+    }
+    .pos { color: #dc2626; font-weight: 700; }
+    .neg { color: #2563eb; font-weight: 700; }
+    .empty {
+      padding: 28px 12px;
+      text-align: center;
+      color: #6b7280;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .wrap { padding: 12px; }
+      .grid { grid-template-columns: 1fr; }
+      .big { font-size: 26px; }
+      .head { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <h2>52주 신고가 비율</h2>
+      <div class="muted" id="meta">불러오는 중…</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">신고가 / (신고가 + 신저가)</div>
+        <div class="big" id="ratio">-</div>
+        <div class="sub" id="ratioSub">-</div>
+      </div>
+      <div class="card">
+        <div class="label">52주 신고가 수</div>
+        <div class="big" id="highCount">-</div>
+        <div class="sub">오늘 고가 기준</div>
+      </div>
+      <div class="card">
+        <div class="label">52주 신저가 수</div>
+        <div class="big" id="lowCount">-</div>
+        <div class="sub">오늘 저가 기준</div>
+      </div>
+      <div class="card">
+        <div class="label">분석 대상 종목 수</div>
+        <div class="big" id="universeCount">-</div>
+        <div class="sub">우선주/스팩 필터 적용</div>
+      </div>
+    </div>
+
+    <div class="bar-card">
+      <div class="bar-track">
+        <div class="bar-fill" id="ratioBar"></div>
+      </div>
+      <div class="row" id="marketSummary"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-head">
+        <h3>52주 신고가 종목 내역</h3>
+        <div class="muted" id="highListMeta"></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>시장</th>
+              <th>티커</th>
+              <th>종목명</th>
+              <th>종가</th>
+              <th>등락률</th>
+              <th>당일 고가</th>
+              <th>52주 고가</th>
+            </tr>
+          </thead>
+          <tbody id="highTableBody">
+            <tr><td colspan="7" class="empty">불러오는 중…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function num(v) {
+      return Number(v ?? 0).toLocaleString("ko-KR");
+    }
+    function pct(v) {
+      const n = Number(v ?? 0);
+      const sign = n > 0 ? "+" : "";
+      return `${sign}${n.toFixed(2)}%`;
+    }
+    function clsPct(v) {
+      const n = Number(v ?? 0);
+      if (n > 0) return "pos";
+      if (n < 0) return "neg";
+      return "";
+    }
+
+    async function load() {
+      const res = await fetch(`./data.json?v=${Date.now()}`);
+      const data = await res.json();
+
+      document.getElementById("meta").textContent =
+        `기준일 ${data.as_of} · 생성 ${data.generated_at}`;
+
+      document.getElementById("ratio").textContent =
+        data.ratio_pct == null ? "-" : `${data.ratio_pct.toFixed(2)}%`;
+
+      document.getElementById("ratioSub").textContent =
+        `공식: 신고가 ${num(data.high_count)} / (신고가 ${num(data.high_count)} + 신저가 ${num(data.low_count)})`;
+
+      document.getElementById("highCount").textContent = num(data.high_count);
+      document.getElementById("lowCount").textContent = num(data.low_count);
+      document.getElementById("universeCount").textContent = num(data.universe_count);
+
+      const bar = document.getElementById("ratioBar");
+      bar.style.width = `${Number(data.ratio_pct || 0)}%`;
+
+      const marketSummary = document.getElementById("marketSummary");
+      marketSummary.innerHTML = "";
+      Object.entries(data.summary_by_market || {}).forEach(([market, summary]) => {
+        const el = document.createElement("div");
+        el.className = "pill";
+        el.textContent = `${market} · 신고가 ${num(summary.high_count)} / 신저가 ${num(summary.low_count)}`;
+        marketSummary.appendChild(el);
+      });
+
+      document.getElementById("highListMeta").textContent =
+        `총 ${num(data.highs.length)}개`;
+
+      const tbody = document.getElementById("highTableBody");
+      tbody.innerHTML = "";
+
+      if (!data.highs || data.highs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="empty">해당 시점 신고가 종목이 없습니다.</td></tr>`;
+        return;
+      }
+
+      data.highs.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.market}</td>
+          <td>${item.ticker}</td>
+          <td>${item.name}</td>
+          <td>${num(item.close)}</td>
+          <td class="${clsPct(item.pct_change)}">${pct(item.pct_change)}</td>
+          <td>${num(item.day_high)}</td>
+          <td>${num(item.high_52w)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    load().catch(err => {
+      document.getElementById("meta").textContent = "데이터 로드 실패";
+      document.getElementById("highTableBody").innerHTML =
+        `<tr><td colspan="7" class="empty">${String(err)}</td></tr>`;
+    });
+  </script>
+</body>
+</html>
